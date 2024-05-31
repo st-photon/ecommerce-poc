@@ -49,16 +49,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <!--<exclusions>
-                <exclusion>
-                    <groupId>org.hamcrest</groupId>
-                    <artifactId>hamcrest-library</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.hamcrest</groupId>
-                    <artifactId>hamcrest-core</artifactId>
-                </exclusion>
-            </exclusions>-->
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -75,12 +65,6 @@
             <artifactId>commons-io</artifactId>
             <version>2.16.1</version>
         </dependency>
-        <!--<dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-junit</artifactId>
-            <version>2.0.0.0</version>
-            <scope>test</scope>
-        </dependency>-->
     </dependencies>
 
     <build>
