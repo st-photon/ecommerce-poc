@@ -22,4 +22,8 @@ public class CartCalculatorHelper {
         });
         return BigDecimal.valueOf(itemAmounts.stream().mapToDouble(Double::doubleValue).sum());
     }
+
+    public Long calculateTotalQty(final List<CartItem> cartItemList) {
+        return cartItemList.stream().mapToLong(CartItem::getQty).sum();
+    }
 }

@@ -16,7 +16,5 @@ public class GlobalExceptionHandler  {
 		res.setMessage(ex.getMessage());
 		res.setStatusCode(HttpStatus.NOT_FOUND);
 		return null;
-		
-		
 	}
 }

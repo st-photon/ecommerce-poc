@@ -3,6 +3,7 @@ package com.photon.cart.services;
 
 import com.photon.cart.entity.Cart;
 import com.photon.cart.entity.CartItem;
+import com.photon.cart.repository.CartItemRepository;
 import com.photon.cart.repository.CartRepository;
 import com.photon.cart.repository.CartRepositoryWrapper;
 import com.photon.cart.request.AddCartItemRequest;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -30,6 +32,8 @@ public class CartCommandServiceImpl implements CartCommandService {
     private final UserRepositoryWrapper userRepositoryWrapper;
 
     private final CartRepositoryWrapper cartRepositoryWrapper;
+
+    private final CartItemRepository cartItemRepository;
 
     @Override
     @Transactional
@@ -70,5 +74,29 @@ public class CartCommandServiceImpl implements CartCommandService {
         cartItem.setQty(qty);
         cartItem.setDeleted(false);
         return cartItem;
+    }
+
+
+    @Transactional
+    @Override
+    public void removeCartItem(int userId, UUID productId) {
+        try {
+            final User user = userRepositoryWrapper.fetchById(userId);
+            final Optional<Cart> cartOptional = cartRepositoryWrapper.findActiveCartByUserId(user.getUserId());
+            if(cartOptional.isEmpty()) {
+                throw new RuntimeException("Active cart not available for this user");
+            }
+            Cart cart = cartOptional.get();
+            Optional<CartItem> cartItemOptional = cart.getCartItems()
+                    .stream()
+                    .filter(c -> c.getProduct().getId().equals(productId))
+                    .findFirst();
+            if(cartItemOptional.isEmpty()) {
+                throw new RuntimeException("Product not available for this user cart");
+            }
+            this.cartItemRepository.deleteEntityById(cartItemOptional.get().getId());
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }

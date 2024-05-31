@@ -24,6 +24,7 @@ public class CartDTOHelper {
     public CartDTO createCartDTO(final Cart cart) {
         final CartDTO cartDTO = new CartDTO();
         cartDTO.setSubTotal(cartCalculatorHelper.calculateSubtotal(cart.getCartItems()));
+        cartDTO.setTotalQty(cartCalculatorHelper.calculateTotalQty(cart.getCartItems()));
         cartDTO.setCartItemDTOList(map(cart.getCartItems()));
         return cartDTO;
     }

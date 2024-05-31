@@ -13,6 +13,9 @@ public class CartDTO implements Serializable {
     @JsonProperty("sub_total")
     private BigDecimal subTotal = BigDecimal.ZERO;
 
+    @JsonProperty("total_qty")
+    private Long totalQty = 0L;
+
     @JsonProperty("items")
     private List<CartItemDTO> cartItemDTOList;
 }
