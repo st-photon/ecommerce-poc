@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @Slf4j
@@ -24,6 +25,9 @@ public class CartCalculatorHelper {
     }
 
     public Long calculateTotalQty(final List<CartItem> cartItemList) {
-        return cartItemList.stream().mapToLong(CartItem::getQty).sum();
+        return cartItemList
+                .stream()
+                .filter(ci -> ci.getQty() != null)
+                .mapToLong(CartItem::getQty).sum();
     }
 }
