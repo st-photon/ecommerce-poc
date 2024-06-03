@@ -40,7 +40,7 @@ public class ProductApiResource {
             log.debug("saveProduct request body {}", createProductRequest);
             return productCommandService.saveProduct(createProductRequest, file);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(String.format("Request body is not in the json format %s", e.getMessage()));
+            throw new RuntimeException("Request body is not in the json format");
         }
     }
 

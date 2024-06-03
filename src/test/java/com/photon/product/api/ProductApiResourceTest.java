@@ -1,6 +1,7 @@
 package com.photon.product.api;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -157,5 +158,25 @@ public class ProductApiResourceTest extends BaseUnitTest {
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(productDTO.getName()).isEqualTo("product1");
         assertThat(productDTO.getId()).isEqualTo(uuid);
+    }
+
+    @Test
+    @DisplayName("")
+    public void shouldThrowJsonProcessingException() {
+        try {
+            //act
+            String body = "\"name\":\"pencil\",\"price\":\"200\"}";
+            Part bodyPart = new MockPart("data", body.getBytes());
+            RequestBuilder requestBuilder = MockMvcRequestBuilders
+                    .multipart(HttpMethod.POST, "/products")
+                    .file("file", new byte[0])
+                    .part(bodyPart)
+                    .contentType(MediaType.MULTIPART_FORM_DATA);
+            this.mockMvc.perform(requestBuilder)
+                    .andReturn().getResponse();
+        } catch (Exception e) {
+            //assert
+            assertThat(e.getCause().getMessage()).isEqualTo("Request body is not in the json format");
+        }
     }
 }
