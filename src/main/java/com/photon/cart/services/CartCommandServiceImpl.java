@@ -38,34 +38,30 @@ public class CartCommandServiceImpl implements CartCommandService {
     @Override
     @Transactional
     public Response addToCart(AddCartItemRequest addCartItemRequest) {
-        try {
-            final Product product = this.productRepositoryWrapper.findById(addCartItemRequest.getProductId());
-            final User user = userRepositoryWrapper.fetchById(addCartItemRequest.getUserId());
-            final Optional<Cart> cartOptional = cartRepositoryWrapper.findActiveCartByUserId(user.getUserId());
-            if(cartOptional.isEmpty()) {
-                Cart cart = new Cart();
-                cart.setCheckedOut(false);
-                cart.setDeleted(false);
-                cart.setUser(user);
-                cart.getCartItems().add(createCartItem(product, addCartItemRequest.getQty()));
-                final Cart newCart = this.cartRepository.saveAndFlush(cart);
-                return Response.of(newCart.getId());
-            }
-            Cart cart = cartOptional.get();
-            Optional<CartItem> cartItemOptional = cart.getCartItems()
-                    .stream()
-                    .filter(c -> c.getProduct().getId().equals(product.getId()))
-                    .findFirst();
-            if(cartItemOptional.isEmpty()) {
-                cart.getCartItems().add(createCartItem(product, addCartItemRequest.getQty()));
-            } else {
-                cartItemOptional.get().setQty(addCartItemRequest.getQty());
-            }
-            cart = this.cartRepository.saveAndFlush(cart);
-            return Response.of(cart.getId());
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+        final Product product = this.productRepositoryWrapper.findById(addCartItemRequest.getProductId());
+        final User user = userRepositoryWrapper.fetchById(addCartItemRequest.getUserId());
+        final Optional<Cart> cartOptional = cartRepositoryWrapper.findActiveCartByUserId(user.getUserId());
+        if(cartOptional.isEmpty()) {
+            Cart cart = new Cart();
+            cart.setCheckedOut(false);
+            cart.setDeleted(false);
+            cart.setUser(user);
+            cart.getCartItems().add(createCartItem(product, addCartItemRequest.getQty()));
+            final Cart newCart = this.cartRepository.saveAndFlush(cart);
+            return Response.of(newCart.getId());
         }
+        Cart cart = cartOptional.get();
+        Optional<CartItem> cartItemOptional = cart.getCartItems()
+                .stream()
+                .filter(c -> c.getProduct().getId().equals(product.getId()))
+                .findFirst();
+        if(cartItemOptional.isEmpty()) {
+            cart.getCartItems().add(createCartItem(product, addCartItemRequest.getQty()));
+        } else {
+            cartItemOptional.get().setQty(addCartItemRequest.getQty());
+        }
+        cart = this.cartRepository.saveAndFlush(cart);
+        return Response.of(cart.getId());
     }
 
     private CartItem createCartItem(Product product, Long qty) {
@@ -84,7 +80,7 @@ public class CartCommandServiceImpl implements CartCommandService {
             final User user = userRepositoryWrapper.fetchById(userId);
             final Optional<Cart> cartOptional = cartRepositoryWrapper.findActiveCartByUserId(user.getUserId());
             if(cartOptional.isEmpty()) {
-                throw new RuntimeException("Active cart not available for this user");
+                throw new IllegalArgumentException("Active cart not available for this user");
             }
             Cart cart = cartOptional.get();
             Optional<CartItem> cartItemOptional = cart.getCartItems()
@@ -92,7 +88,7 @@ public class CartCommandServiceImpl implements CartCommandService {
                     .filter(c -> c.getProduct().getId().equals(productId))
                     .findFirst();
             if(cartItemOptional.isEmpty()) {
-                throw new RuntimeException("Product not available for this user cart");
+                throw new IllegalArgumentException("Product not available for this user cart");
             }
             this.cartItemRepository.deleteEntityById(cartItemOptional.get().getId());
         } catch (Exception e) {

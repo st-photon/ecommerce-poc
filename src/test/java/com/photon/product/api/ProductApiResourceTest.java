@@ -23,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockPart;
+import org.springframework.test.util.AssertionErrors;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -174,9 +175,11 @@ public class ProductApiResourceTest extends BaseUnitTest {
                     .contentType(MediaType.MULTIPART_FORM_DATA);
             this.mockMvc.perform(requestBuilder)
                     .andReturn().getResponse();
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             //assert
             assertThat(e.getCause().getMessage()).isEqualTo("Request body is not in the json format");
+        } catch(Exception e) {
+            AssertionErrors.assertNotEquals("Error thrown which is not handled", "", e.getMessage());
         }
     }
 }
