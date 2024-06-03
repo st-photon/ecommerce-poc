@@ -1,6 +1,9 @@
 package com.photon.product.api;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.photon.infrastructure.Response;
 import com.photon.product.dto.ProductDTO;
 import com.photon.product.request.CreateProductRequest;
@@ -30,9 +33,15 @@ public class ProductApiResource {
 
     @Operation(summary = "return 200 if product saves successfully", description = "save product and upload file")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Response saveProduct(@RequestPart(required = false) CreateProductRequest createProductRequest, @RequestPart("file") MultipartFile file) {
-        log.debug("saveProduct request body {}", createProductRequest);
-        return productCommandService.saveProduct(createProductRequest, file);
+    public Response saveProduct(@RequestPart("data") String reqBody, @RequestPart("file") MultipartFile file) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            CreateProductRequest createProductRequest = mapper.readValue(reqBody, CreateProductRequest.class);
+            log.debug("saveProduct request body {}", createProductRequest);
+            return productCommandService.saveProduct(createProductRequest, file);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(String.format("Request body is not in the json format %s", e.getMessage()));
+        }
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
