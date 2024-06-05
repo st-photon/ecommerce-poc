@@ -50,7 +50,6 @@ public class ProductApiResourceTest extends BaseUnitTest {
     @MockBean
     private ProductQueryService productQueryService;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     @DisplayName("should return hello world")

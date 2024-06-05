@@ -1,13 +1,18 @@
 package com.photon.cart.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+import lombok.*;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class CartDTO implements Serializable {
 
     @JsonProperty("sub_total")
@@ -17,5 +22,5 @@ public class CartDTO implements Serializable {
     private Long totalQty = 0L;
 
     @JsonProperty("items")
-    private List<CartItemDTO> cartItemDTOList;
+    private List<CartItemDTO> cartItemDTOList = new ArrayList<>();
 }
