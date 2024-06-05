@@ -6,9 +6,12 @@ import com.photon.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.type.descriptor.jdbc.VarcharJdbcType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity(name = "Cart")
 @Table(name = "cart")
@@ -31,4 +34,8 @@ public class Cart extends BaseEntity {
     @Column(name = "is_deleted", nullable = false)
     @Basic(optional = false)
     private boolean isDeleted;
+
+    @Column(name = "order_id")
+    @JdbcType(VarcharJdbcType.class)
+    private UUID orderId;
 }

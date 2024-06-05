@@ -16,6 +16,8 @@ public class PlaceOrderDTO {
 
     private CustomerRequest customerRequest;
 
+    private int userId;
+
     @Data
     public static class PlaceOrderItemRequest {
 
