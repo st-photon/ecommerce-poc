@@ -27,13 +27,13 @@ public class OrderApiResource {
         return this.orderRestClient.placeOrder(placeOrderRequest);
     }
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<OrderResponseDTO> fetchMyOrders(@RequestParam(value = "userId") int userId){
         return this.orderRestClient.fetchMyOrders(userId);
     }
 
-    @GetMapping("/{orderId}")
-    public OrderResponseDTO fetchMyOrders(@PathVariable UUID orderId, @RequestParam(value = "userId") int userId){
-        return new OrderResponseDTO();
+    @GetMapping(value = "/{orderId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public OrderResponseDTO fetchMyOrders(@PathVariable UUID orderId){
+        return this.orderRestClient.fetchMOrderDetails(orderId);
     }
 }

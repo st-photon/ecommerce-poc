@@ -125,12 +125,18 @@ public class OrderRestClient {
         }
     }
 
-    public OrderResponseDTO fetchMOrderDetails(UUID orderId, int userId) {
+    public OrderResponseDTO fetchMOrderDetails(UUID orderId) {
         try {
             String orderURI = orderServiceEndpoint;
-            UriComponents builder = UriComponentsBuilder.fromHttpUrl(orderURI)
-                    .queryParam("userId",userId).build();
-            return null;
+            UriComponents builder = UriComponentsBuilder
+                    .fromHttpUrl(orderURI)
+                    .pathSegment(orderId.toString())
+                    .build();
+            ResponseEntity<OrderResponseDTO> responseEntity = restTemplate.exchange(builder.toUriString(),
+                    HttpMethod.GET,
+                    null,
+                    OrderResponseDTO.class);
+            return responseEntity.getBody();
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
